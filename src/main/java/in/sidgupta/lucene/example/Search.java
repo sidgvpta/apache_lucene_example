@@ -5,12 +5,14 @@ import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -30,7 +32,6 @@ public class Search {
     public static String cranQueries_path = "src/main/resources/cran.qry";
     private static final Logger LOG = LoggerFactory.getLogger(CreateIndex.class);
     public static final int MAX_RESULTS = 1400;
-    private int counter = 0;
 
     public Search(String index_root, String results_root, String similarity_type, String analyzer_type) throws IOException, ParseException {
         IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(String.format(index_root, similarity_type, analyzer_type))));
@@ -53,13 +54,13 @@ public class Search {
         switch (analyzer_type) {
             case "standardAnalyzer" : analyzer = new StandardAnalyzer();
                 break;
-            case "keywordAnalyzer" : analyzer = new KeywordAnalyzer();
-                break;
             case "whitespaceAnalyzer" : analyzer = new WhitespaceAnalyzer();
                 break;
             case "simpleAnalyzer" : analyzer = new SimpleAnalyzer();
                 break;
             case "stopAnalyzer" : analyzer = new StopAnalyzer();
+                break;
+            case "englishAnalyzer" : analyzer = new EnglishAnalyzer();
                 break;
         }
 
@@ -68,7 +69,7 @@ public class Search {
         searcher.setSimilarity(similarity);
         //QueryParser parser = new QueryParser("title", analyzer);
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[] {"title", "author", "published", "body"}, analyzer);
-        parser.setAllowLeadingWildcard(true);
+        //parser.setAllowLeadingWildcard(true);
         int query_id = 0;
         String query_body = new String();
 
@@ -80,9 +81,8 @@ public class Search {
             //query_id = query.substring(0, 3);
             query_id++;
             query_body = query.substring(3).trim();
+            query_body = QueryParser.escape(query_body);
             TopDocs result = searcher.search(parser.parse(query_body), MAX_RESULTS);
-            counter++;
-            //System.out.print(counter);
             ScoreDoc score_docs[] = result.scoreDocs;
             for(int i = 0; i < score_docs.length; i++) {
                 query_results.add(Integer.toString(query_id) + " " + iter_num + " " + (score_docs[i].doc + 1) + " " + i + " " + score_docs[i].score + " " + run_id);
@@ -118,6 +118,7 @@ public class Search {
             else {
                 query_body += " ";
                 query_body += line;
+                query_body = query_body.trim();
             }
         }
         queryList.add(query_id + query_body);

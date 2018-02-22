@@ -5,6 +5,7 @@ import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
@@ -51,13 +52,13 @@ public class CreateIndex {
         switch (analyzer_type) {
             case "standardAnalyzer" : analyzer = new StandardAnalyzer();
                 break;
-            case "keywordAnalyzer" : analyzer = new KeywordAnalyzer();
-                break;
             case "whitespaceAnalyzer" : analyzer = new WhitespaceAnalyzer();
                 break;
             case "simpleAnalyzer" : analyzer = new SimpleAnalyzer();
                 break;
             case "stopAnalyzer" : analyzer = new StopAnalyzer();
+                break;
+            case "englishAnalyzer" : analyzer = new EnglishAnalyzer();
                 break;
         }
 
@@ -67,10 +68,7 @@ public class CreateIndex {
 
         final IndexWriter writer = new IndexWriter(FSDirectory.open(Paths.get(String.format(index_root, similarity_type, analyzer_type))), config);
         List<String> lines = Files.lines(Paths.get(cranTexts_path)).collect(Collectors.toList());
-        //lines.forEach(line -> addToIndex(line, writer));
         parseText(lines, writer);
-        //LOG.info(String.format("Wrote %d titles to index", lines.size()));
-        //System.out.println(counter);
         writer.close();
     }
 
@@ -82,9 +80,9 @@ public class CreateIndex {
         for(String line : lines) {
             if(line.matches("^\\.\\w(\\s+\\d+)?")) {
                 if(line.contains("I")) {
-                    doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
                     List<IndexableField> fields = doc.getFields();
                     if(fields.size() > 1) {
+                        doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
                         addToIndex(doc, writer);
                     }
                     addToIndex_input = line.substring(3);

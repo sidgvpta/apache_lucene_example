@@ -8,10 +8,10 @@ public class main {
     public static String cranQueryRelevanceTrecEval_path = "src/main/resources/cranqrel_trecEval";
     public static String index_root = "src/main/indexes/%s/%s";
     public static String results_root = "src/main/results/%s/%s/";
-    public static int NUM_SIMILARITIES = 4;
-    public static int NUM_ANALYZERS = 4;
     private static final String[] SIMILARITIES = {"vector_space_model", "bm_25", "boolean", "lm_dirichlet"};
-    private static final String[] ANALYZERS = {"standardAnalyzer", "whitespaceAnalyzer", "simpleAnalyzer", "stopAnalyzer"};
+    private static final String[] ANALYZERS = {"standardAnalyzer", "whitespaceAnalyzer", "simpleAnalyzer", "stopAnalyzer", "englishAnalyzer"};
+    public static int NUM_SIMILARITIES = SIMILARITIES.length;
+    public static int NUM_ANALYZERS = ANALYZERS.length;
 
     public static void main(String [] args) {
 

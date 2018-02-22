@@ -24,7 +24,7 @@ public class TrecEvalRunner {
             String trecAnalysis_output = (String.format(results_root, similarity_type, analyzer_type) + "trec_eval");
 
             //ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, queryRelevanceLocation, queryResultsLocation);
-            ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, cranQueryRelevanceTrecEval_path, queryResults_location, "-l=4");
+            ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, cranQueryRelevanceTrecEval_path, queryResults_location, "-l=3");
             Path workingDirectory  = FileSystems.getDefault().getPath(".").toAbsolutePath();
             pb.directory(new File(workingDirectory.toString()));
             Process process = pb.start();
@@ -65,9 +65,12 @@ public class TrecEvalRunner {
             docID = decompose[1];
             relevanceScore = decompose[2];
             relevanceScore_int = Integer.parseInt(relevanceScore);
+            if(relevanceScore_int >= 1 && relevanceScore_int <= 5) {
+                relevanceScore_int = 6 - relevanceScore_int;
+            }
             //System.out.println(queryID + " " + iterNum + " " + docID + " " + relevanceScore_int);
-            relevanceStrings.add(queryID + " " + iterNum + " " + docID + " " + relevanceScore_int);
+            relevanceStrings.add(queryID + " " + iterNum + " " + docID + " " + Integer.toString(relevanceScore_int));
         }
-        Files.write(Paths.get(cranQueryRelevanceTrecEval_path), relevanceStrings, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+        Files.write(Paths.get(cranQueryRelevanceTrecEval_path), relevanceStrings, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     }
 }
