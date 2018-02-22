@@ -334,7 +334,7 @@ char *argv[];
 	    exit (1);
 	}
     }
-    accum_eval = (TREC_EVAL) {"all", 0, 0, NULL, 0, 0};
+    accum_eval = (TREC_EVAL) {"all",  0, NULL, 0, 0};
     for (m = 0; m < te_num_trec_measures; m++) {
 	if (MEASURE_MARKED(te_trec_measures[m])) {
 	    if (UNDEF == te_trec_measures[m]->init_meas (&epi,
@@ -354,7 +354,7 @@ char *argv[];
     (void) memcpy (q_eval.values, accum_eval.values,
 		   accum_eval.num_values * sizeof (TREC_EVAL_VALUE));
     q_eval.num_values = accum_eval.num_values;
-    q_eval.num_queries = q_eval.num_orig_queries = 0;
+    q_eval.num_queries  = 0;
 
     /* For each topic which has both qrels and top results information,
        calculate, possibly print (if query_flag), and accumulate
@@ -430,18 +430,14 @@ char *argv[];
 	exit (7);
     }
 
-    if (epi.average_complete_flag) {
-	/* Want to average over possibly missing queries.  Pass in actual
-	 *  number of queries in num_orig_queries */
-	accum_eval.num_orig_queries = accum_eval.num_queries;
-	accum_eval.num_queries = all_rel_info.num_q_rels;
-    }
-
     /* Calculate final averages, and print (if desired) */
+    /* Note that averages may depend on the entire rel_info data if
+       epi.average_complete_flag is set */
     for (m = 0; m < te_num_trec_measures; m++) {
 	if (MEASURE_REQUESTED(te_trec_measures[m])) {
 	    if (UNDEF == te_trec_measures[m]->calc_avg_meas
-		    (&epi, te_trec_measures[m], &accum_eval) ||
+		    (&epi, te_trec_measures[m],
+		     &all_rel_info, &accum_eval) ||
 		UNDEF == te_trec_measures[m]->print_final_and_cleanup_meas 
 		(&epi, te_trec_measures[m],  &accum_eval)) {
 		    fprintf (stderr,"trec_eval: Can't print measure '%s'\n",

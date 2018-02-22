@@ -57,7 +57,10 @@ For example:
       qid1  ujg1  sub2  docno2  1.0
       qid1  ujg1  sub2  docno4  3.0
 expressses 5 preferences (1>2, 1>3, 2 > 3, 4>1, 4>2).  Note the duplicate
-1 > 2 is not counted as a separate preference
+1 > 2 is not counted as a separate preference.
+A conventional pairwise preference file with no transistivity could be converted
+into this form, with two entries per JSG, the preferred doc with a rel of 2.0 and
+the non-preferred doc with a rel of 1.0.
 
 Multiple users are indicated by different JGs.
 For example:

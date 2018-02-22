@@ -64,8 +64,6 @@ typedef struct {
 typedef struct {
     char  *qid;                     /* query id  */
     long num_queries;               /* Number of queries for this eval */
-    long num_orig_queries;          /* Number of queries for this eval without
-                                       missing values, if using trec_eval -c */
     TREC_EVAL_VALUE *values;        /* Actual measures and their values */
     long num_values;                /* Number of individual measures */
     long max_num_values;            /* Private: Max number of measures space
@@ -142,8 +140,10 @@ typedef struct trec_meas {
     int (* acc_meas) (const EPI *epi, const struct trec_meas *tm,
 		      const TREC_EVAL *q_eval, TREC_EVAL *summ_eval);
     /* Calculate final averages (if needed)  from summary info */
+    /* Because of epi->average_complete_flag (-c on command line), averaging may 
+       depend  on all relevant topics, not just those with results */
     int (* calc_avg_meas) (const EPI *epi, const struct trec_meas *tm,
-			   TREC_EVAL *eval);
+			   const ALL_REL_INFO *all_rel_info, TREC_EVAL *eval);
     /* Print single query value */
     int (* print_single_meas) (const EPI *epi, const struct trec_meas *tm,
 			       const TREC_EVAL *eval);
