@@ -6,9 +6,7 @@ import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
@@ -18,6 +16,7 @@ import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -93,7 +92,8 @@ public class CreateIndex {
                     textField_flag = "cran_id";
                 }
                 else if(line.contains("T")) {
-                    doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
+                    doc.add(new StringField(textField_flag, addToIndex_input, Field.Store.YES));
+                    doc.add(new IntPoint(textField_flag, Integer.parseInt(addToIndex_input)));
                     addToIndex_input = "";
                     textField_flag = "title";
                 }
@@ -103,12 +103,12 @@ public class CreateIndex {
                     textField_flag = "author";
                 }
                 else if(line.contains("B")) {
-                    doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
+                    doc.add(new StringField(textField_flag, addToIndex_input, Field.Store.YES));
                     addToIndex_input = "";
                     textField_flag = "published";
                 }
                 else if(line.contains("W")) {
-                    doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
+                    doc.add(new StringField(textField_flag, addToIndex_input, Field.Store.YES));
                     addToIndex_input = "";
                     textField_flag = "body";
                 }
@@ -119,6 +119,7 @@ public class CreateIndex {
             else {
                 addToIndex_input += " ";
                 addToIndex_input += line;
+                addToIndex_input = addToIndex_input.trim();
             }
         }
         doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));

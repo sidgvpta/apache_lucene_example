@@ -33,6 +33,8 @@ public class TrecEvalRunner {
             Path outputPath = Paths.get(trecAnalysis_output);
             String line;
             List<String> lines = new ArrayList<>();
+            System.out.println(similarity_type + " " + analyzer_type);
+            System.out.println("---------------------------");
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
                 lines.add(line);

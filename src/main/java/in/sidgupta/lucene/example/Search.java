@@ -8,6 +8,7 @@ import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -65,9 +66,10 @@ public class Search {
         List<String> lines = Files.lines(Paths.get(cranQueries_path)).collect(Collectors.toList());
         ArrayList<String> queryList = parseText(lines);
         searcher.setSimilarity(similarity);
-        QueryParser parser = new QueryParser("title", analyzer);
+        //QueryParser parser = new QueryParser("title", analyzer);
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[] {"title", "author", "published", "body"}, analyzer);
         parser.setAllowLeadingWildcard(true);
-        String query_id = new String();
+        int query_id = 0;
         String query_body = new String();
 
         List<String> query_results = new ArrayList<String>();
@@ -75,21 +77,21 @@ public class Search {
         String run_id = "0";
 
         for(String query : queryList) {
-            query_id = query.substring(0, 3);
-            query_body = query.substring(3);
+            //query_id = query.substring(0, 3);
+            query_id++;
+            query_body = query.substring(3).trim();
             TopDocs result = searcher.search(parser.parse(query_body), MAX_RESULTS);
             counter++;
             //System.out.print(counter);
             ScoreDoc score_docs[] = result.scoreDocs;
-            Set<String> fields = new HashSet<String>();
-            fields.add("cran_id");
             for(int i = 0; i < score_docs.length; i++) {
-                query_results.add(query_id + " " + iter_num + " " + (score_docs[i].doc + 1) + " " + i + " " + score_docs[i].score + " " + run_id);
+                query_results.add(Integer.toString(query_id) + " " + iter_num + " " + (score_docs[i].doc + 1) + " " + i + " " + score_docs[i].score + " " + run_id);
             }
         }
         reader.close();
         String results_location = (String.format(results_root, similarity_type, analyzer_type) + "query_results");
-        Files.write(Paths.get(results_location), query_results, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+        Files.write(Paths.get(results_location), query_results, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        //Files.write(Paths.get(results_location), query_results);
     }
 
     private ArrayList<String> parseText(List<String> lines) {

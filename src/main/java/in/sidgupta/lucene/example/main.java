@@ -9,9 +9,9 @@ public class main {
     public static String index_root = "src/main/indexes/%s/%s";
     public static String results_root = "src/main/results/%s/%s/";
     public static int NUM_SIMILARITIES = 4;
-    public static int NUM_ANALYZERS = 5;
+    public static int NUM_ANALYZERS = 4;
     private static final String[] SIMILARITIES = {"vector_space_model", "bm_25", "boolean", "lm_dirichlet"};
-    private static final String[] ANALYZERS = {"standardAnalyzer", "keywordAnalyzer", "whitespaceAnalyzer", "simpleAnalyzer", "stopAnalyzer"};
+    private static final String[] ANALYZERS = {"standardAnalyzer", "whitespaceAnalyzer", "simpleAnalyzer", "stopAnalyzer"};
 
     public static void main(String [] args) {
 
