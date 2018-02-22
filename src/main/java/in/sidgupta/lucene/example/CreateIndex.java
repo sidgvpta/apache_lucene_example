@@ -8,6 +8,7 @@ import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -98,12 +99,12 @@ public class CreateIndex {
                     textField_flag = "title";
                 }
                 else if(line.contains("A")) {
-                    doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
+                    doc.add(new StringField(textField_flag, addToIndex_input, Field.Store.YES));
                     addToIndex_input = "";
                     textField_flag = "author";
                 }
                 else if(line.contains("B")) {
-                    doc.add(new TextField(textField_flag, addToIndex_input, Field.Store.YES));
+                    doc.add(new StringField(textField_flag, addToIndex_input, Field.Store.YES));
                     addToIndex_input = "";
                     textField_flag = "published";
                 }
