@@ -65,9 +65,22 @@ public class TrecEvalRunner {
             docID = decompose[1];
             relevanceScore = decompose[2];
             relevanceScore_int = Integer.parseInt(relevanceScore);
-            if(relevanceScore_int >= 1 && relevanceScore_int <= 5) {
-                relevanceScore_int = 6 - relevanceScore_int;
+            if(relevanceScore_int == -1) {
+                relevanceScore_int = 5;
             }
+            if(relevanceScore_int == 1) {
+                relevanceScore_int = 4;
+            }
+            if(relevanceScore_int == 2) {
+                relevanceScore_int = 3;
+            }
+            if(relevanceScore_int == 3) {
+                relevanceScore_int = 2;
+            }
+            if(relevanceScore_int == 4) {
+                relevanceScore_int = 1;
+            }
+
             //System.out.println(queryID + " " + iterNum + " " + docID + " " + relevanceScore_int);
             relevanceStrings.add(queryID + " " + iterNum + " " + docID + " " + Integer.toString(relevanceScore_int));
         }
