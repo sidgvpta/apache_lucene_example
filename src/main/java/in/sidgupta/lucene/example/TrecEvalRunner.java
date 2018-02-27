@@ -24,7 +24,7 @@ public class TrecEvalRunner {
             String trecAnalysis_output = (String.format(results_root, similarity_type, analyzer_type) + "trec_eval");
 
             //ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, queryRelevanceLocation, queryResultsLocation);
-            ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, cranQueryRelevanceTrecEval_path, queryResults_location, "-l=3");
+            ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, "-l3", "-m", "all_trec", cranQueryRelevanceTrecEval_path, queryResults_location);
             Path workingDirectory  = FileSystems.getDefault().getPath(".").toAbsolutePath();
             pb.directory(new File(workingDirectory.toString()));
             Process process = pb.start();
@@ -65,20 +65,24 @@ public class TrecEvalRunner {
             docID = decompose[1];
             relevanceScore = decompose[2];
             relevanceScore_int = Integer.parseInt(relevanceScore);
+
             if(relevanceScore_int == -1) {
                 relevanceScore_int = 5;
             }
-            if(relevanceScore_int == 1) {
+            else if(relevanceScore_int == 1) {
                 relevanceScore_int = 4;
             }
-            if(relevanceScore_int == 2) {
+            else if(relevanceScore_int == 2) {
                 relevanceScore_int = 3;
             }
-            if(relevanceScore_int == 3) {
+            else if(relevanceScore_int == 3) {
                 relevanceScore_int = 2;
             }
-            if(relevanceScore_int == 4) {
+            else if(relevanceScore_int == 4) {
                 relevanceScore_int = 1;
+            }
+            else {
+                System.out.println("Invalid score");
             }
 
             //System.out.println(queryID + " " + iterNum + " " + docID + " " + relevanceScore_int);

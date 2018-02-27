@@ -75,7 +75,7 @@ public class Search {
 
         List<String> query_results = new ArrayList<String>();
         String iter_num = "0";
-        String run_id = "0";
+        String run_id = "run_id";
 
         for(String query : queryList) {
             //query_id = query.substring(0, 3);
