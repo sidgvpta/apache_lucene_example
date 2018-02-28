@@ -24,7 +24,7 @@ public class TrecEvalRunner {
             String trecAnalysis_output = (String.format(results_root, similarity_type, analyzer_type) + "trec_eval");
 
             //ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, queryRelevanceLocation, queryResultsLocation);
-            ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, "-l3", "-m", "all_trec", cranQueryRelevanceTrecEval_path, queryResults_location);
+            ProcessBuilder pb = new ProcessBuilder(TREC_EVAL_COMMAND, "-l", "3", "-m", "all_trec", cranQueryRelevanceTrecEval_path, queryResults_location);
             Path workingDirectory  = FileSystems.getDefault().getPath(".").toAbsolutePath();
             pb.directory(new File(workingDirectory.toString()));
             Process process = pb.start();
@@ -82,10 +82,10 @@ public class TrecEvalRunner {
                 relevanceScore_int = 1;
             }
             else {
-                System.out.println("Invalid score");
+                System.out.println("ERROR: INVALID SCORE");
             }
 
-            //System.out.println(queryID + " " + iterNum + " " + docID + " " + relevanceScore_int);
+            //relevanceScore_int = 6 - relevanceScore_int;
             relevanceStrings.add(queryID + " " + iterNum + " " + docID + " " + Integer.toString(relevanceScore_int));
         }
         Files.write(Paths.get(cranQueryRelevanceTrecEval_path), relevanceStrings, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
